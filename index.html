@@ -1,406 +1,459 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR 스캐너 테스트</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        padding: 20px;
-        max-width: 600px;
-        margin: 0 auto;
-        background-color: #f5f5f5;
-      }
-
-      .method-section {
-        background: white;
-        margin: 20px 0;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      }
-
-      .method-title {
-        color: #333;
-        border-bottom: 2px solid #007bff;
-        padding-bottom: 10px;
-        margin-bottom: 20px;
-      }
-
-      button {
-        background: #007bff;
-        color: white;
-        border: none;
-        padding: 12px 24px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-        margin: 10px 5px;
-      }
-
-      button:hover {
-        background: #0056b3;
-      }
-
-      button:disabled {
-        background: #ccc;
-        cursor: not-allowed;
-      }
-
-      input[type="file"] {
-        margin: 10px 0;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        width: 100%;
-      }
-
-      #video {
-        width: 100%;
-        max-width: 400px;
-        height: 300px;
-        border: 2px solid #007bff;
-        border-radius: 5px;
-        background: #000;
-      }
-
-      #canvas {
-        display: none;
-      }
-
-      .result {
-        background: #d4edda;
-        border: 1px solid #c3e6cb;
-        color: #155724;
-        padding: 15px;
-        border-radius: 5px;
-        margin: 15px 0;
-        word-wrap: break-word;
-      }
-
-      .error {
-        background: #f8d7da;
-        border: 1px solid #f5c6cb;
-        color: #721c24;
-        padding: 15px;
-        border-radius: 5px;
-        margin: 15px 0;
-      }
-
-      .status {
-        background: #fff3cd;
-        border: 1px solid #ffeaa7;
-        color: #856404;
-        padding: 10px;
-        border-radius: 5px;
-        margin: 10px 0;
-        font-size: 14px;
-      }
-
-      .scan-area {
-        position: relative;
-        display: inline-block;
-      }
-
-      .scan-overlay {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 200px;
-        height: 200px;
-        border: 3px solid #ff0000;
-        border-radius: 10px;
-        pointer-events: none;
-      }
-
-      .scan-overlay::before {
-        content: "";
-        position: absolute;
-        top: -3px;
-        left: -3px;
-        right: -3px;
-        bottom: -3px;
-        border: 2px solid rgba(255, 255, 255, 0.8);
-        border-radius: 10px;
-      }
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f5f5f5;
+        }
+        
+        .method-section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .method-title {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        input[type="file"] {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+        }
+        
+        #video {
+            width: 100%;
+            max-width: 400px;
+            height: 300px;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            background: #000;
+        }
+        
+        #canvas {
+            display: none;
+        }
+        
+        .result {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            word-wrap: break-word;
+        }
+        
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        
+        .status {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        
+        .scan-area {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .scan-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            border: 3px solid #ff0000;
+            border-radius: 10px;
+            pointer-events: none;
+        }
+        
+        .scan-overlay::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <h1>📱 QR 스캐너 테스트</h1>
     <p>두 가지 방식의 QR 스캐너를 테스트해보세요.</p>
 
     <!-- 방식 1: Input File -->
     <div class="method-section">
-      <h2 class="method-title">🗂️ 방식 1: HTML Input File</h2>
-      <p><strong>특징:</strong> 간단하고 안정적, iOS Safari 완벽 지원</p>
-
-      <input
-        type="file"
-        id="fileInput"
-        accept="image/*"
-        capture="environment"
-      />
-      <div class="status">파일을 선택하거나 카메라로 촬영하세요</div>
-      <canvas id="fileCanvas" style="display: none"></canvas>
-      <div id="fileResult"></div>
+        <h2 class="method-title">🗂️ 방식 1: HTML Input File</h2>
+        <p><strong>특징:</strong> 간단하고 안정적, iOS Safari 완벽 지원</p>
+        
+        <input type="file" id="fileInput" accept="image/*" capture="environment">
+        <div class="status">파일을 선택하거나 카메라로 촬영하세요</div>
+        <canvas id="fileCanvas" style="display: none;"></canvas>
+        <div id="fileResult"></div>
     </div>
 
     <!-- 방식 2: getUserMedia + jsQR -->
     <div class="method-section">
-      <h2 class="method-title">
-        📹 방식 2: 실시간 카메라 (getUserMedia + jsQR)
-      </h2>
-      <p><strong>특징:</strong> 실시간 스캔, 더 나은 UX, Android에서 최적</p>
-
-      <button id="startCamera">카메라 시작</button>
-      <button id="stopCamera" disabled>카메라 정지</button>
-      <button id="switchCamera" disabled>카메라 전환</button>
-
-      <div class="status" id="cameraStatus">
-        카메라를 시작하려면 버튼을 클릭하세요
-      </div>
-
-      <div class="scan-area">
-        <video id="video" autoplay muted playsinline></video>
-        <div class="scan-overlay"></div>
-      </div>
-
-      <canvas id="canvas"></canvas>
-      <div id="cameraResult"></div>
+        <h2 class="method-title">📹 방식 2: 실시간 카메라 (getUserMedia + jsQR)</h2>
+        <p><strong>특징:</strong> 실시간 스캔, 더 나은 UX, Android에서 최적</p>
+        
+        <button id="startCamera">카메라 시작</button>
+        <button id="stopCamera" disabled>카메라 정지</button>
+        <button id="switchCamera" disabled>카메라 전환</button>
+        
+        <div class="status" id="cameraStatus">카메라를 시작하려면 버튼을 클릭하세요</div>
+        
+        <div class="scan-area">
+            <video id="video" autoplay muted playsinline></video>
+            <div class="scan-overlay"></div>
+        </div>
+        
+        <canvas id="canvas"></canvas>
+        <div id="cameraResult"></div>
     </div>
 
     <!-- 디바이스 정보 -->
     <div class="method-section">
-      <h2 class="method-title">🔍 디바이스 정보</h2>
-      <div id="deviceInfo"></div>
+        <h2 class="method-title">🔍 디바이스 정보</h2>
+        <div id="deviceInfo"></div>
     </div>
 
     <script>
-      // 디바이스 정보 표시
-      function showDeviceInfo() {
-        const info = document.getElementById("deviceInfo");
-        const userAgent = navigator.userAgent;
-        const hasGetUserMedia = !!(
-          navigator.mediaDevices && navigator.mediaDevices.getUserMedia
-        );
-        const hasFileAPI = !!(window.File && window.FileReader);
-
-        info.innerHTML = `
+        // 디바이스 정보 표시
+        function showDeviceInfo() {
+            const info = document.getElementById('deviceInfo');
+            const userAgent = navigator.userAgent;
+            const hasGetUserMedia = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+            const hasFileAPI = !!(window.File && window.FileReader);
+            
+            info.innerHTML = `
                 <p><strong>User Agent:</strong> ${userAgent}</p>
-                <p><strong>getUserMedia 지원:</strong> ${
-                  hasGetUserMedia ? "✅" : "❌"
-                }</p>
-                <p><strong>File API 지원:</strong> ${
-                  hasFileAPI ? "✅" : "❌"
-                }</p>
-                <p><strong>jsQR 라이브러리:</strong> ${
-                  typeof jsQR !== "undefined" ? "✅" : "❌"
-                }</p>
+                <p><strong>getUserMedia 지원:</strong> ${hasGetUserMedia ? '✅' : '❌'}</p>
+                <p><strong>File API 지원:</strong> ${hasFileAPI ? '✅' : '❌'}</p>
+                <p><strong>jsQR 라이브러리:</strong> ${typeof jsQR !== 'undefined' ? '✅' : '❌'}</p>
             `;
-      }
+        }
 
-      // 방식 1: Input File QR 스캔
-      document
-        .getElementById("fileInput")
-        .addEventListener("change", function (e) {
-          const file = e.target.files[0];
-          if (!file) return;
+        // QR 데이터 처리 함수
+        function handleQRResult(qrData, resultElementId, method) {
+            const resultDiv = document.getElementById(resultElementId);
+            const isUrl = isValidUrl(qrData);
+            
+            let resultHTML = `
+                <div class="result">
+                    <h4>✅ QR 코드 인식 성공! (${method})</h4>
+                    <p><strong>데이터:</strong> ${qrData}</p>
+                    <p><strong>타입:</strong> ${isUrl ? '🔗 웹 링크' : '📝 텍스트'}</p>
+            `;
+            
+            if (isUrl) {
+                resultHTML += `
+                    <div style="margin: 15px 0; padding: 10px; background: #e3f2fd; border-radius: 5px;">
+                        <p><strong>🔗 링크가 감지되었습니다!</strong></p>
+                        <button onclick="openLink('${qrData}')" style="background: #4caf50; margin: 5px;">
+                            🚀 페이지로 이동
+                        </button>
+                        <button onclick="copyToClipboard('${qrData}')" style="background: #ff9800; margin: 5px;">
+                            📋 링크 복사
+                        </button>
+                        <div id="countdown-${resultElementId}" style="margin-top: 10px; font-weight: bold;"></div>
+                    </div>
+                `;
+                
+                // 5초 후 자동 이동 (사용자가 원하지 않으면 취소 가능)
+                startCountdown(qrData, resultElementId);
+            } else {
+                resultHTML += `
+                    <button onclick="copyToClipboard('${qrData}')" style="background: #ff9800; margin: 10px 5px;">
+                        📋 텍스트 복사
+                    </button>
+                `;
+            }
+            
+            resultHTML += `</div>`;
+            resultDiv.innerHTML = resultHTML;
+        }
 
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            const img = new Image();
-            img.onload = function () {
-              const canvas = document.getElementById("fileCanvas");
-              const ctx = canvas.getContext("2d");
+        // URL 유효성 검사
+        function isValidUrl(string) {
+            try {
+                const url = new URL(string);
+                return url.protocol === 'http:' || url.protocol === 'https:';
+            } catch (_) {
+                return false;
+            }
+        }
 
-              canvas.width = img.width;
-              canvas.height = img.height;
-              ctx.drawImage(img, 0, 0);
+        // 링크 열기
+        function openLink(url) {
+            if (confirm(`다음 링크로 이동하시겠습니까?\n\n${url}`)) {
+                window.open(url, '_blank', 'noopener,noreferrer');
+            }
+        }
 
-              const imageData = ctx.getImageData(
-                0,
-                0,
-                canvas.width,
-                canvas.height
-              );
-              const code = jsQR(
-                imageData.data,
-                imageData.width,
-                imageData.height
-              );
+        // 클립보드 복사
+        async function copyToClipboard(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                alert('클립보드에 복사되었습니다!');
+            } catch (err) {
+                // 클립보드 API가 지원되지 않는 경우 fallback
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('클립보드에 복사되었습니다!');
+            }
+        }
 
-              const resultDiv = document.getElementById("fileResult");
-              if (code) {
-                resultDiv.innerHTML = `
-                            <div class="result">
-                                <h4>✅ QR 코드 인식 성공!</h4>
-                                <p><strong>데이터:</strong> ${code.data}</p>
-                                <p><strong>위치:</strong> (${code.location.topLeftCorner.x}, ${code.location.topLeftCorner.y})</p>
-                            </div>
-                        `;
-              } else {
-                resultDiv.innerHTML = `
+        // 자동 이동 카운트다운
+        function startCountdown(url, resultElementId) {
+            let seconds = 5;
+            const countdownElement = document.getElementById(`countdown-${resultElementId}`);
+            
+            const updateCountdown = () => {
+                if (seconds > 0) {
+                    countdownElement.innerHTML = `
+                        ⏰ ${seconds}초 후 자동으로 페이지로 이동합니다
+                        <button onclick="cancelCountdown('${resultElementId}')" style="background: #f44336; margin-left: 10px; padding: 5px 10px; font-size: 12px;">
+                            취소
+                        </button>
+                    `;
+                    seconds--;
+                    setTimeout(updateCountdown, 1000);
+                } else {
+                    window.open(url, '_blank', 'noopener,noreferrer');
+                    countdownElement.innerHTML = '🚀 페이지로 이동했습니다!';
+                }
+            };
+            
+            updateCountdown();
+        }
+
+        // 카운트다운 취소
+        function cancelCountdown(resultElementId) {
+            const countdownElement = document.getElementById(`countdown-${resultElementId}`);
+            countdownElement.innerHTML = '자동 이동이 취소되었습니다.';
+        }
+
+        // 방식 1: Input File QR 스캔
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.getElementById('fileCanvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                    
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const code = jsQR(imageData.data, imageData.width, imageData.height);
+                    
+                    const resultDiv = document.getElementById('fileResult');
+                    if (code) {
+                        handleQRResult(code.data, 'fileResult', 'File Input');
+                    } else {
+                        resultDiv.innerHTML = `
                             <div class="error">
                                 <h4>❌ QR 코드를 찾을 수 없습니다</h4>
                                 <p>다른 이미지를 시도해보세요.</p>
                             </div>
                         `;
-              }
+                    }
+                };
+                img.src = e.target.result;
             };
-            img.src = e.target.result;
-          };
-          reader.readAsDataURL(file);
+            reader.readAsDataURL(file);
         });
 
-      // 방식 2: 실시간 카메라 QR 스캔
-      let video = document.getElementById("video");
-      let canvas = document.getElementById("canvas");
-      let ctx = canvas.getContext("2d");
-      let scanning = false;
-      let currentStream = null;
-      let facingMode = "environment"; // 후면 카메라
+        // 방식 2: 실시간 카메라 QR 스캔
+        let video = document.getElementById('video');
+        let canvas = document.getElementById('canvas');
+        let ctx = canvas.getContext('2d');
+        let scanning = false;
+        let currentStream = null;
+        let facingMode = 'environment'; // 후면 카메라
 
-      function updateStatus(message, isError = false) {
-        const status = document.getElementById("cameraStatus");
-        status.textContent = message;
-        status.className = isError ? "error" : "status";
-      }
+        function updateStatus(message, isError = false) {
+            const status = document.getElementById('cameraStatus');
+            status.textContent = message;
+            status.className = isError ? 'error' : 'status';
+        }
 
-      async function startCamera() {
-        try {
-          updateStatus("카메라 권한을 요청하는 중...");
+        async function startCamera() {
+            try {
+                updateStatus('카메라 권한을 요청하는 중...');
+                
+                const constraints = {
+                    video: {
+                        facingMode: facingMode,
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    }
+                };
 
-          const constraints = {
-            video: {
-              facingMode: facingMode,
-              width: { ideal: 1280 },
-              height: { ideal: 720 },
-            },
-          };
+                currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+                video.srcObject = currentStream;
+                
+                video.addEventListener('loadedmetadata', () => {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    scanning = true;
+                    scanQR();
+                    updateStatus('실시간 QR 스캔 중... QR 코드를 카메라에 비춰보세요.');
+                });
 
-          currentStream = await navigator.mediaDevices.getUserMedia(
-            constraints
-          );
-          video.srcObject = currentStream;
+                document.getElementById('startCamera').disabled = true;
+                document.getElementById('stopCamera').disabled = false;
+                document.getElementById('switchCamera').disabled = false;
 
-          video.addEventListener("loadedmetadata", () => {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
+            } catch (err) {
+                console.error('카메라 접근 오류:', err);
+                updateStatus(`카메라 접근 실패: ${err.message}`, true);
+            }
+        }
+
+        function stopCamera() {
+            scanning = false;
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                currentStream = null;
+            }
+            video.srcObject = null;
+            
+            document.getElementById('startCamera').disabled = false;
+            document.getElementById('stopCamera').disabled = true;
+            document.getElementById('switchCamera').disabled = true;
+            document.getElementById('cameraResult').innerHTML = '';
+            
+            updateStatus('카메라가 정지되었습니다.');
+        }
+
+        async function switchCamera() {
+            facingMode = facingMode === 'environment' ? 'user' : 'environment';
+            updateStatus(`카메라를 ${facingMode === 'environment' ? '후면' : '전면'}으로 전환 중...`);
+            
+            stopCamera();
+            setTimeout(startCamera, 500);
+        }
+
+        function scanQR() {
+            if (!scanning) return;
+
+            if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+                if (code) {
+                    scanning = false; // 스캔 성공 시 일시 정지
+                    
+                    // 성공음 (지원되는 경우)
+                    try {
+                        const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUeCSGG0/LNeSsFJILG8N2POAcZaLjr56FOEAhUqOHwumUcCjqP1/LNeSsFJH/D7tyRQgoWYrfq66hUFApFn+DyvWQdCSGA0/LNeSsFJH7D7tyQQgoWYrfq66hUFOpFn+DyvWQdCSGB0/LNeSsFJH7C7tyQQgoWYrfq66hUFApGn+DyvWQdCSGB0/LNeSsFJH/B7tyQQgoWYrfq66hUFApGn+DyvmQdCSGB0/LNeSsFJH/C7tyQQgoWYrfq66hUFApGn+DyvmQdCSGB0/LNeSsFJH/C7tyQQgoWYrfq66hUFApGn+DyvmQdCSGB0/LNeSsFJH/C7tyQQgoWYrfq66hUFA==');
+                        audio.play().catch(() => {}); // 소리 재생 실패해도 무시
+                    } catch (e) {}
+                    
+                    // QR 결과 처리
+                    handleQRResult(code.data, 'cameraResult', 'Real-time Camera');
+                    
+                    // 결과에 다시 스캔 버튼 추가
+                    const resultDiv = document.getElementById('cameraResult');
+                    resultDiv.innerHTML += `
+                        <button onclick="resumeScanning()" style="background: #17a2b8; margin-top: 10px;">
+                            🔍 다시 스캔하기
+                        </button>
+                    `;
+                    
+                    updateStatus('QR 코드 인식 완료! 다시 스캔하려면 "다시 스캔하기" 버튼을 클릭하세요.');
+                    
+                    return;
+                }
+            }
+
+            requestAnimationFrame(scanQR);
+        }
+
+        function resumeScanning() {
             scanning = true;
             scanQR();
-            updateStatus("실시간 QR 스캔 중... QR 코드를 카메라에 비춰보세요.");
-          });
-
-          document.getElementById("startCamera").disabled = true;
-          document.getElementById("stopCamera").disabled = false;
-          document.getElementById("switchCamera").disabled = false;
-        } catch (err) {
-          console.error("카메라 접근 오류:", err);
-          updateStatus(`카메라 접근 실패: ${err.message}`, true);
-        }
-      }
-
-      function stopCamera() {
-        scanning = false;
-        if (currentStream) {
-          currentStream.getTracks().forEach((track) => track.stop());
-          currentStream = null;
-        }
-        video.srcObject = null;
-
-        document.getElementById("startCamera").disabled = false;
-        document.getElementById("stopCamera").disabled = true;
-        document.getElementById("switchCamera").disabled = true;
-        document.getElementById("cameraResult").innerHTML = "";
-
-        updateStatus("카메라가 정지되었습니다.");
-      }
-
-      async function switchCamera() {
-        facingMode = facingMode === "environment" ? "user" : "environment";
-        updateStatus(
-          `카메라를 ${
-            facingMode === "environment" ? "후면" : "전면"
-          }으로 전환 중...`
-        );
-
-        stopCamera();
-        setTimeout(startCamera, 500);
-      }
-
-      function scanQR() {
-        if (!scanning) return;
-
-        if (video.readyState === video.HAVE_ENOUGH_DATA) {
-          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          const code = jsQR(imageData.data, imageData.width, imageData.height);
-
-          if (code) {
-            scanning = false; // 스캔 성공 시 일시 정지
-
-            document.getElementById("cameraResult").innerHTML = `
-                        <div class="result">
-                            <h4>🎉 QR 코드 스캔 성공!</h4>
-                            <p><strong>데이터:</strong> ${code.data}</p>
-                            <p><strong>위치:</strong> (${Math.round(
-                              code.location.topLeftCorner.x
-                            )}, ${Math.round(
-              code.location.topLeftCorner.y
-            )})</p>
-                            <button onclick="resumeScanning()">다시 스캔하기</button>
-                        </div>
-                    `;
-
-            updateStatus(
-              'QR 코드 인식 완료! 다시 스캔하려면 "다시 스캔하기" 버튼을 클릭하세요.'
-            );
-
-            // 성공음 (지원되는 경우)
-            try {
-              const audio = new Audio(
-                "data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUeCSGG0/LNeSsFJILG8N2POAcZaLjr56FOEAhUqOHwumUcCjqP1/LNeSsFJH/D7tyRQgoWYrfq66hUFApFn+DyvWQdCSGA0/LNeSsFJH7D7tyQQgoWYrfq66hUFOpFn+DyvWQdCSGB0/LNeSsFJH7C7tyQQgoWYrfq66hUFApGn+DyvWQdCSGB0/LNeSsFJH/B7tyQQgoWYrfq66hUFApGn+DyvmQdCSGB0/LNeSsFJH/C7tyQQgoWYrfq66hUFApGn+DyvmQdCSGB0/LNeSsFJH/C7tyQQgoWYrfq66hUFApGn+DyvmQdCSGB0/LNeSsFJH/C7tyQQgoWYrfq66hUFA=="
-              );
-              audio.play().catch(() => {}); // 소리 재생 실패해도 무시
-            } catch (e) {}
-
-            return;
-          }
+            updateStatus('실시간 QR 스캔 중... QR 코드를 카메라에 비춰보세요.');
+            document.getElementById('cameraResult').innerHTML = '';
         }
 
-        requestAnimationFrame(scanQR);
-      }
+        // 이벤트 리스너
+        document.getElementById('startCamera').addEventListener('click', startCamera);
+        document.getElementById('stopCamera').addEventListener('click', stopCamera);
+        document.getElementById('switchCamera').addEventListener('click', switchCamera);
 
-      function resumeScanning() {
-        scanning = true;
-        scanQR();
-        updateStatus("실시간 QR 스캔 중... QR 코드를 카메라에 비춰보세요.");
-        document.getElementById("cameraResult").innerHTML = "";
-      }
+        // 페이지 로드 시 디바이스 정보 표시
+        showDeviceInfo();
 
-      // 이벤트 리스너
-      document
-        .getElementById("startCamera")
-        .addEventListener("click", startCamera);
-      document
-        .getElementById("stopCamera")
-        .addEventListener("click", stopCamera);
-      document
-        .getElementById("switchCamera")
-        .addEventListener("click", switchCamera);
-
-      // 페이지 로드 시 디바이스 정보 표시
-      showDeviceInfo();
-
-      // 페이지 언로드 시 카메라 정리
-      window.addEventListener("beforeunload", () => {
-        if (currentStream) {
-          currentStream.getTracks().forEach((track) => track.stop());
-        }
-      });
+        // 페이지 언로드 시 카메라 정리
+        window.addEventListener('beforeunload', () => {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+            }
+        });
     </script>
-  </body>
+</body>
 </html>
